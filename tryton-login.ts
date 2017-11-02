@@ -5,7 +5,7 @@ import { NavController, Events } from 'ionic-angular';
 
 import { TranslateService } from 'ng2-translate';
 import { TrytonProvider } from '../ngx-tryton-providers/tryton-provider';
-import { EncodeJSONRead } from '../json/encode-json-read';
+import { EncodeJSONRead } from '../ngx-tryton-json/encode-json-read';
 // Models
 import { User, UserSession } from './interfaces/user';
 import { Party } from './interfaces/party';
