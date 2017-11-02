@@ -1,0 +1,32 @@
+
+
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{ title | translate }}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+ <form role="form" (submit)="login($event, username.value, password.value)">
+  <ion-list>
+
+    <ion-item>
+      <ion-label i18n>Username</ion-label>
+      <ion-input type="text" #username class="form-control" value=""></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label i18n>Password</ion-label>
+      <ion-input type="password" #password class="form-control" value=""></ion-input>
+    </ion-item>
+
+  </ion-list>
+
+  <div padding>
+    <button type="subimt" ion-button color="primary" block i18n>
+      Enter
+    </button>
+  </div>
+  </form>
+
+</ion-content>
