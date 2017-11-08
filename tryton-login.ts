@@ -16,13 +16,13 @@ import { ConfigurationService } from '../ngx-tryton-config/ConfigService';
   selector: 'page-tryton-login',
   templateUrl: 'login.html',
 })
+
 /**
  * Login class for tryton.
  * This class will log the user in the system and store the necessary data to
  * continue working
  */
 export class TrytonLoginPage {
-
   user: User;
   user_session: UserSession;
   party_response: Party[];
@@ -63,20 +63,20 @@ export class TrytonLoginPage {
       })
   }
 
-    /**
-     * Initialize the login page
-     */
-  	ionViewDidLoad() {
-	    console.log('Login screen');
-	    console.log()
-	    if (this.locker.get('sessionId')) {
-	      this.user_session = {
-	        userId: this.locker.get('userId'),
-	        sessionId: this.locker.get('sessionId'),
-	      }
-	      this.get_user_data();
-	    }
-	  }
+  /**
+   * Initialize the login page
+   */
+  ionViewDidLoad() {
+    console.log('Login screen');
+    console.log()
+    if (this.locker.get('sessionId')) {
+      this.user_session = {
+        userId: this.locker.get('userId'),
+        sessionId: this.locker.get('sessionId'),
+      }
+      this.get_user_data();
+    }
+  }
 
   /**
    * Logs the user into the system
@@ -141,5 +141,4 @@ export class TrytonLoginPage {
         console.log("An error was encountered", error)
       })
   }
-
 }
