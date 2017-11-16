@@ -55,10 +55,8 @@ export class TrytonLoginPage {
       data => {
         this.config = data;
         this.database = this.config.DatabaseName;
-        console.log("Got config", data)
       },
       error => {
-        console.log("Error", error)
         alert('No config file found, create from the template in the config folder')
       })
   }
@@ -67,8 +65,6 @@ export class TrytonLoginPage {
    * Initialize the login page
    */
   ionViewDidLoad() {
-    console.log('Login screen');
-    console.log()
     if (this.locker.get('sessionId')) {
       this.user_session = {
         userId: this.locker.get('userId'),
@@ -85,19 +81,15 @@ export class TrytonLoginPage {
    * @param {string} password password of the user
    */
   public login(event, username: string, password: string) {
-    console.log("Starting loggin procedure")
     this.session_service.doLogin(this.database, username, password)
       .subscribe(
       data => {
         if (data.constructor.name == "ErrorObservable") {
           alert("Incorrect username or password");
-          console.log("An error ocurred");
           return;
         }
-        console.log("Login correct", data);
         this.user_session = data;
         this.user_session.database = this.database;
-        console.log("User session", this.user_session);
         this.get_user_data();
       },
       err => {
@@ -114,8 +106,6 @@ export class TrytonLoginPage {
    * name, employee, employee party and language
    */
   public get_user_data() {
-    console.log("Getting user data for session")
-
     let json_constructor = new EncodeJSONRead;
     let userId = Number(this.user_session.userId);
     let method = "res.user";
@@ -127,11 +117,9 @@ export class TrytonLoginPage {
     this.tryton_provider.search(json)
       .subscribe(
       data => {
-        console.log("Recived data", data);
         this.user = data[method];
         this.driver.set('UserData', this.user[0]);
 
-        console.log("Using user language", this.user[0]['language.code'])
         if (this.user[0]['language.code'])
           this.translate.use(this.user[0]['language.code']);
         this.events.publish('Data received');
