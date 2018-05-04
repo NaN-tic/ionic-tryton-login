@@ -40,6 +40,7 @@ export class TrytonLoginPage {
     public navCtrl: NavController,
     public translate: TranslateService,
     public events: Events) {
+    this.title = environment.title;
     this.user = {
       'employee.rec_name': '',
       employee: -1,
