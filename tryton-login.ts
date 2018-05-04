@@ -10,7 +10,7 @@ import { EncodeJSONRead } from '../ngx-tryton-json/encode-json-read';
 import { User, UserSession } from './interfaces/user';
 import { Party } from './interfaces/party';
 
-import { ConfigurationService } from '../ngx-tryton-config/ConfigService';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'page-tryton-login',
@@ -39,8 +39,7 @@ export class TrytonLoginPage {
     public tryton_provider: TrytonProvider,
     public navCtrl: NavController,
     public translate: TranslateService,
-    public events: Events,
-    public config_service: ConfigurationService) {
+    public events: Events) {
     this.user = {
       'employee.rec_name': '',
       employee: -1,
@@ -51,14 +50,6 @@ export class TrytonLoginPage {
     }
     this.fields = Object.keys(this.user)
     translate.setDefaultLang(this.user['language.code']);
-        this.config_service.getConfiguration().subscribe(
-      data => {
-        this.config = data;
-        this.database = this.config.DatabaseName;
-      },
-      error => {
-        alert('No config file found, create from the template in the config folder')
-      })
   }
 
   /**
@@ -81,7 +72,7 @@ export class TrytonLoginPage {
    * @param {string} password password of the user
    */
   public login(event, username: string, password: string) {
-    this.session_service.doLogin(this.database, username, password)
+    this.session_service.doLogin(environment.database, username, password)
       .subscribe(
       data => {
         if (data.constructor.name == "ErrorObservable") {
@@ -89,7 +80,7 @@ export class TrytonLoginPage {
           return;
         }
         this.user_session = data;
-        this.user_session.database = this.database;
+        this.user_session.database = environment.database;
         this.get_user_data();
       },
       err => {
@@ -125,7 +116,7 @@ export class TrytonLoginPage {
         this.events.publish('Data received');
       },
       error => {
-        alert('Error al inciar session', )
+        alert('Error start session', )
         console.log("An error was encountered", error)
       })
   }
