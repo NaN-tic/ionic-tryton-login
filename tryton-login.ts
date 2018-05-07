@@ -6,9 +6,11 @@ import { NavController, Events } from 'ionic-angular';
 import { TranslateService } from 'ng2-translate';
 import { TrytonProvider } from '../ngx-tryton-providers/tryton-provider';
 import { EncodeJSONRead } from '../ngx-tryton-json/encode-json-read';
+
 // Models
 import { User, UserSession } from './interfaces/user';
 import { Party } from './interfaces/party';
+import { MainMenuPage} from '../../pages/main-menu/main-menu'
 
 import { environment } from '../../environments/environment';
 
@@ -29,6 +31,7 @@ export class TrytonLoginPage {
   location_response: Location[];
   driver = this.locker.useDriver(Locker.DRIVERS.LOCAL)
   database: string = ''
+  locale: string= '';
   title: string = '';
   fields: Array<string>;
   config;
@@ -83,6 +86,7 @@ export class TrytonLoginPage {
         this.user_session = data;
         this.user_session.database = environment.database;
         this.get_user_data();
+        this.navCtrl.push(MainMenuPage)
       },
       err => {
         alert("Incorrect username or password")
@@ -111,9 +115,9 @@ export class TrytonLoginPage {
       data => {
         this.user = data[method];
         this.driver.set('UserData', this.user[0]);
-
-        if (this.user[0]['language.code'])
-          this.translate.use(this.user[0]['language.code']);
+        let locale = this.user[0]['language.code'].substring(0, 2) || 'en';
+        sessionStorage.setItem('locale', locale);
+        this.translate.use(locale);
         this.events.publish('Data received');
       },
       error => {
