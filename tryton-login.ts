@@ -55,6 +55,12 @@ export class TrytonLoginPage {
     translate.setDefaultLang(this.user['language.code']);
   }
 
+  ngOnInit() {
+    if (sessionStorage.getItem('sessionId')) {
+      this.navCtrl.push(MainMenuPage);
+    }
+  }
+
   /**
    * Initialize the login page
    */
