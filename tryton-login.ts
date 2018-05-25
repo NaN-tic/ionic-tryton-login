@@ -5,7 +5,6 @@ import { NavController, Events } from 'ionic-angular';
 
 import { TranslateService } from 'ng2-translate';
 import { TrytonProvider } from '../ngx-tryton-providers/tryton-provider';
-import { EncodeJSONRead } from '../ngx-tryton-json/encode-json-read';
 
 // Models
 import { User, UserSession } from './interfaces/user';
@@ -65,7 +64,6 @@ export class TrytonLoginPage {
         userId: this.locker.get('userId'),
         sessionId: this.locker.get('sessionId'),
       }
-      this.get_user_data();
     }
   }
 
@@ -76,7 +74,7 @@ export class TrytonLoginPage {
    * @param {string} password password of the user
    */
   public login(event, username: string, password: string) {
-    this.session_service.doLogin(environment.database, username, password)
+    this.session_service.doLogin(environment.database, username, password, false)
       .subscribe(
       data => {
         if (data.constructor.name == "ErrorObservable") {
@@ -85,7 +83,7 @@ export class TrytonLoginPage {
         }
         this.user_session = data;
         this.user_session.database = environment.database;
-        this.get_user_data();
+        this.getPreferences();
         this.navCtrl.push(MainMenuPage)
       },
       err => {
@@ -101,28 +99,12 @@ export class TrytonLoginPage {
    * Gets the following data from the current user:
    * name, employee, employee party and language
    */
-  public get_user_data() {
-    let json_constructor = new EncodeJSONRead;
-    let userId = Number(this.user_session.userId);
-    let method = "res.user";
-    let domain = [json_constructor.createDomain('id', '=', userId)];
-
-    json_constructor.addNode(method, domain, this.fields);
-    let json = json_constructor.createJson();
-
-    this.tryton_provider.search(json)
-      .subscribe(
-      data => {
-        this.user = data[method];
-        this.driver.set('UserData', this.user[0]);
-        let locale = this.user[0]['language.code'] || 'en';
-        sessionStorage.setItem('locale', locale);
+  public getPreferences() {
+    this.session_service.rpc('model.res.user.get_preferences', [true], {})
+      .subscribe(preferences => {
+        let locale = preferences['language'] || 'en';
+        this.session_service.setDefaultContext(preferences);
         this.translate.use(locale);
-        this.events.publish('Data received');
-      },
-      error => {
-        alert('Error start session', )
-        console.log("An error was encountered", error)
-      })
+      });
   }
 }
